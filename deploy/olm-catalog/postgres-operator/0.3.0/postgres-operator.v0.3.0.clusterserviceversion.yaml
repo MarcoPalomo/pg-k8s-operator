@@ -49,7 +49,7 @@ spec:
     kind: Secret
     metadata:
       name: ext-postgres-operator
-      namespace: operators
+      namespace: pg-operator
     type: Opaque
     data:
       POSTGRES_HOST: postgres
