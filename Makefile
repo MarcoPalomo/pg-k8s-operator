@@ -1,0 +1,18 @@
+.PHONY: gen build
+
+gen:
+	operator-sdk generate k8s
+	operator-sdk generate crds
+build:
+	operator-sdk build pgk8s/postgres-operator
+unit-test:
+	go test ./... -mod vendor -coverprofile coverage.out
+	go tool cover -func coverage.out
+unit-test-coverage: unit-test
+	go tool cover -html coverage.out
+linux-docker:
+	@docker run -ti -v $(PWD):/work golang:1.18.0-stretch /bin/bash
+linux-build:
+	@GOBIN=/work/bin GO111MODULE=on GOOS=linux GOARC=x86_64 go build --mod=vendor  -o operator github.com/MarcoPalomo/pg-k8s-operator/cmd/manager
+docker-build:
+	docker run -ti -v $(PWD):/work -w /work golang:1.18.0-stretch make linux-build
